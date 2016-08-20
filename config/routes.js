@@ -73,22 +73,17 @@ router.route('/events/:event_id')
 
     Event.findByIdAndUpdate(event_id, req.body, {new: true},function(err, event) {
       if (err) res.status(400).send(err);
-      // Actor.findOne({
-      //   _id: actor_id
-      // }, function(err, actor) {
-      //   res.json(actor);
-      // });
       res.json(event)
-    });
-  })
+      });
+    })
   .delete(function(req, res) {
     var event_id = req.params.event_id;
     Event.findOneAndRemove(event_id, req.body, function(err, event) {
       console.log("event_id" + event_id);
       if (err) return next(err);
       res.json(event);
+      });
     });
-  });
 
   router.route('/events')
   .get(function(req, res) {
