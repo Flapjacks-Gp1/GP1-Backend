@@ -31,7 +31,7 @@ router.route('/events/:event_id')
   })
 
   .put(function(req, res, next) {
-      // console.log(req.body);
+
       var event_id = req.params.event_id;
 
       Event.findByIdAndUpdate(event_id, req.body, function(err, event) {
