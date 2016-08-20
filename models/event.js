@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var user = mongoose.model("User");
+// var User = mongoose.model("User");
 var eventSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -13,12 +13,12 @@ var eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-user_id:[{
-type: mongoose.Schema.Types.ObjectId,
-ref: 'User'
-}],
+// user:[{
+// type: mongoose.Schema.Types.ObjectId,
+// ref: 'User'
+// }],
 timestamps: {}
 });
 
 var Event = mongoose.model('Event', eventSchema);
-module.exports = User;
+module.exports = Event;

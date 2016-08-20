@@ -1,5 +1,8 @@
 var express = require('express');
-var router = express.Router();
+var router = express.Router(),
+    jwt = require('jsonwebtoken'),
+    jwt_secret = 'whateversuperduperwho';
+   var expressJWT = require('express-jwt');
 var User = require('../models/user');
 var Event = require('../models/event');
 
@@ -17,6 +20,40 @@ router.post('/signup', function(req, res) {
       message: 'user created'
     });
   });
+});
+
+
+router.post('/login', function(req, res) {
+ var loggedin_user = req.body;
+
+ User.findOne(
+   loggedin_user,
+   function(err, found_user) {
+     // this is error find flow
+     if (err) return res.status(400).send(err);
+
+     if (found_user) {
+       var payload = {
+         id: found_user.id,
+         email: found_user.email
+       };
+       var expiryObj = {
+         expiresIn: '3h'
+       };
+       console.log( payload, expiryObj, jwt_secret);
+       var jwt_token =
+         jwt.sign(payload, jwt_secret, expiryObj);
+        //  jwt.sign(payload, jwt_secret, { expiresIn : 60*3 });
+
+
+       return res.status(200).send(jwt_token);
+     } else {
+       // this is login failed flow
+       return res.status(400).send({
+         message: 'login failed'
+       });
+     }
+   });
 });
 
 router.route('/events/:event_id')
@@ -66,3 +103,5 @@ router.route('/events/:event_id')
       res.json(new_event);
     });
   });
+
+module.exports = router;
