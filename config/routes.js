@@ -6,7 +6,7 @@ var router = express.Router(),
 var User = require('../models/user');
 var Event = require('../models/event');
 
-
+//updated routes for events
 router.post('/signup', function(req, res) {
 
   //set var for the posted request
@@ -68,7 +68,7 @@ router.route('/events/:event_id')
   })
 
   .put(function(req, res, next) {
-      // console.log(req.body);
+
       var event_id = req.params.event_id;
 
       Event.findByIdAndUpdate(event_id, req.body, function(err, event) {
