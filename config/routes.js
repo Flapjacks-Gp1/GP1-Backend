@@ -43,7 +43,7 @@ router.post('/login', function(req, res) {
        console.log( payload, expiryObj, jwt_secret);
        var jwt_token =
          jwt.sign(payload, jwt_secret, expiryObj);
-        //  jwt.sign(payload, jwt_secret, { expiresIn : 60*3 });
+        //edited to expiry object
 
 
        return res.status(200).send(jwt_token);
