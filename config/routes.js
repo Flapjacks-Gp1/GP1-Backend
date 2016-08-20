@@ -3,7 +3,7 @@ var router = express.Router();
 var User = require('../models/user');
 var Event = require('../models/event');
 
-
+//updated routes for events
 router.post('/signup', function(req, res) {
 
   //set var for the posted request
