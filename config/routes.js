@@ -44,9 +44,10 @@ router.post('/login', function(req, res) {
        var jwt_token =
          jwt.sign(payload, jwt_secret, expiryObj);
         //edited to expiry object
+      var userID = found_user.id;
 
 
-       return res.status(200).send(jwt_token);
+       return res.status(200).send({token: jwt_token, id: userID});
      } else {
        // this is login failed flow
        return res.status(400).send({
@@ -97,8 +98,11 @@ router.route('/events/:event_id')
   .post(function(req, res, next) {
     console.log(req.body);
     var new_event = new Event(req.body);
+    console.log(req.body);
     new_event.save(function(err) {
       if (err) return next(err);
+      //save event id to user
+
       res.json(new_event);
     });
   });
