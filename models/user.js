@@ -16,7 +16,8 @@ events:[{
 type: mongoose.Schema.Types.ObjectId,
 ref: 'Event'
 }],
-timestamps: {}
+}, {
+  timestamps: {}
 });
 
 var User = mongoose.model('User', userSchema);

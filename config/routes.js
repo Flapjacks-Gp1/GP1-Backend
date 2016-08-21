@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router(),
     jwt = require('jsonwebtoken'),
     jwt_secret = 'whateversuperduperwho';
-   var expressJWT = require('express-jwt');
+var expressJWT = require('express-jwt');
 var User = require('../models/user');
 var Event = require('../models/event');
 
@@ -57,6 +57,16 @@ router.post('/login', function(req, res) {
    });
 });
 
+router.route('/users')
+.get(function(req, res, next) {
+  User.find({})
+  .populate('events')
+  .exec(function(err, users) {
+    if (err) return next(err);
+    res.json(users)
+  });
+})
+
 router.route('/events/:event_id')
   .get(function(req, res, next) {
     var event_id = req.params.event_id;
@@ -101,12 +111,16 @@ router.route('/events/:event_id')
     console.log(req.body.user);
     new_event.save(function(err) {
       if (err) return next(err);
-      var user_id = req.body.user;
+      var user_id = { _id: req.body.user };
+      var update_event = { events: new_event._id };
+      console.log(user_id);
+      console.log(update_event);
       //save event id to user
-      User.findByIdAndUpdate(user_id, req.body, function(err, update_user) {
-        if (err) res.status(400).send(err);
-        var new_event_id = new_event.event_id;
-        update_user.events.push(new_event_id);
+      User.findByIdAndUpdate(user_id, { $push: update_event }, {safe: true, upsert: true, new : true}, function(err, update_user) {
+        // if (err) res.status(400).send(err);
+        console.log(err);
+        console.log(update_user);
+        // update_user.events.push(new_event_id);
       });
       res.json(new_event);
     });
