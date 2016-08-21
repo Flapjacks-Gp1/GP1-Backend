@@ -10,7 +10,8 @@ var userSchema = new mongoose.Schema({
 },
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
 events:[{
 type: mongoose.Schema.Types.ObjectId,
