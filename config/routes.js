@@ -44,9 +44,13 @@ router.post('/login', function(req, res) {
         var jwt_token =
           jwt.sign(payload, jwt_secret, expiryObj);
         //edited to expiry object
-        var userID = found_user.id;
+        // var userID = found_user.id;
 
-        return res.status(200).send({token: jwt_token, id: userID});
+        return res.status(200).send({
+          token: jwt_token,
+          id: userID
+        });
+        //  return res.status(200).send(jwt_token);
       } else {
         // this is login failed flow
         return res.status(400).send({
@@ -66,7 +70,7 @@ router.route('/users')
       });
   })
 
-//edit and delete users
+// //edit and delete users
 router.route('/users/:user_id')
   .get(function(req, res, next) {
     var user_id = req.params.user_id;
@@ -77,21 +81,22 @@ router.route('/users/:user_id')
       res.json(user);
     });
   })
+//
+.put(function(req, res, next) {
+  console.log(req.body);
+  var user_id = req.params.user_id;
 
-  .put(function(req, res, next) {
-    console.log(req.body);
-    var event_id = req.params.event_id;
-
-    Event.findByIdAndUpdate(event_id, req.body, {new: true},function(err, event) {
-      if (err) res.status(400).send(err);
-      res.json(event)
-      });
-    })
-
+  User.findByIdAndUpdate(user_id, req.body, {
+    new: true
+  }, function(err, user) {
+    if (err) res.status(400).send(err);
+    res.json(user);
+  });
+})
+//
 .delete(function(req, res) {
   var user_id = req.params.user_id;
-  console.log("user_id" + user_id);
-  console.log("user" + user);
+  console.log("In delete method");
   User.findOneAndRemove(user_id, req.body, function(err, user) {
     if (err) return next(err);
     res.json(user);
@@ -111,22 +116,23 @@ router.route('/events/:event_id')
   })
 
 .put(function(req, res, next) {
-    console.log(req.body);
-    var event_id = req.params.event_id;
+  console.log(req.body);
+  var event_id = req.params.event_id;
 
-    Event.findByIdAndUpdate(event_id, req.body, {
-      new: true
-    }, function(err, event) {
-      if (err) res.status(400).send(err);
-      res.json(event)
-    });
-  })
-  .delete(function(req, res) {
-    var event_id = req.params.event_id;
-    Event.findOneAndRemove(event_id, req.body, function(err, event) {
-      console.log("event_id" + event_id);
-      if (err) return next(err);
-      res.json(event);
+  Event.findByIdAndUpdate(event_id, req.body, {
+    new: true
+  }, function(err, event) {
+    if (err) res.status(400).send(err);
+    res.json(event)
+  });
+})
+
+.delete(function(req, res) {
+  var event_id = req.params.event_id;
+  Event.findOneAndRemove(event_id, req.body, function(err, event) {
+    console.log("event_id" + event_id);
+    if (err) return next(err);
+    res.json(event);
     });
   });
 
@@ -145,12 +151,22 @@ router.route('/events')
     console.log(req.body.user);
     new_event.save(function(err) {
       if (err) return next(err);
-      var user_id = { _id: req.body.user };
-      var update_event = { events: new_event._id };
+      var user_id = {
+        _id: req.body.user
+      };
+      var update_event = {
+        events: new_event._id
+      };
       console.log(user_id);
       console.log(update_event);
       //save event id to user
-      User.findByIdAndUpdate(user_id, { $push: update_event }, {safe: true, upsert: true, new : true}, function(err, update_user) {
+      User.findByIdAndUpdate(user_id, {
+        $push: update_event
+      }, {
+        safe: true,
+        upsert: true,
+        new: true
+      }, function(err, update_user) {
         // if (err) res.status(400).send(err);
         console.log(err);
         console.log(update_user);
@@ -159,6 +175,7 @@ router.route('/events')
       res.json(new_event);
     });
   });
+
 
 
 module.exports = router;
