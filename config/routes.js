@@ -140,21 +140,25 @@ router.route('/events')
       });
   })
   .post(function(req, res, next) {
-     console.log(req.body);
-     var new_event = new Event(req.body);
-     console.log(req.body.user);
-     new_event.save(function(err) {
-       if (err) return next(err);
-       var user_id = req.body.user;
-       //save event id to user
-       User.findByIdAndUpdate(user_id, req.body, function(err, update_user) {
-         if (err) res.status(400).send(err);
-         var new_event_id = new_event.event_id;
-         update_user.events.push(new_event_id);
-       });
-       res.json(new_event);
-     });
-   });
+    console.log(req.body);
+    var new_event = new Event(req.body);
+    console.log(req.body.user);
+    new_event.save(function(err) {
+      if (err) return next(err);
+      var user_id = { _id: req.body.user };
+      var update_event = { events: new_event._id };
+      console.log(user_id);
+      console.log(update_event);
+      //save event id to user
+      User.findByIdAndUpdate(user_id, { $push: update_event }, {safe: true, upsert: true, new : true}, function(err, update_user) {
+        // if (err) res.status(400).send(err);
+        console.log(err);
+        console.log(update_user);
+        // update_user.events.push(new_event_id);
+      });
+      res.json(new_event);
+    });
+  });
 
 
 module.exports = router;

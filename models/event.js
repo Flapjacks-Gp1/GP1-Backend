@@ -1,3 +1,4 @@
+
 var mongoose = require('mongoose');
 // var User = mongoose.model("User");
 var eventSchema = new mongoose.Schema({
@@ -13,12 +14,12 @@ var eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-user:[{
+user:{
 type: mongoose.Schema.Types.ObjectId,
 ref: 'User'
-}],
-
-timestamps: {}
+}
+}, {
+  timestamps: {}
 });
 
 var Event = mongoose.model('Event', eventSchema);
