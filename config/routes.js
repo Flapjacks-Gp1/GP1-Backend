@@ -98,11 +98,16 @@ router.route('/events/:event_id')
   .post(function(req, res, next) {
     console.log(req.body);
     var new_event = new Event(req.body);
-    console.log(req.body);
+    console.log(req.body.user);
     new_event.save(function(err) {
       if (err) return next(err);
+      var user_id = req.body.user;
       //save event id to user
-
+      User.findByIdAndUpdate(user_id, req.body, function(err, update_user) {
+        if (err) res.status(400).send(err);
+        var new_event_id = new_event.event_id;
+        update_user.events.push(new_event_id);
+      });
       res.json(new_event);
     });
   });
