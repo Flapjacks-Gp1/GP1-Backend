@@ -44,7 +44,7 @@ router.post('/login', function(req, res) {
         var jwt_token =
           jwt.sign(payload, jwt_secret, expiryObj);
         //edited to expiry object
-        // var userID = found_user.id;
+        var userID = found_user.id;
 
         return res.status(200).send({
           token: jwt_token,
@@ -74,10 +74,16 @@ router.route('/users')
 router.route('/users/:user_id')
   .get(function(req, res, next) {
     var user_id = req.params.user_id;
+
     User.findOne({
       _id: user_id
     }, function(err, user) {
       if (err) return next(err);
+      console.log(user.events.length);
+      for (i=0; i < user.events.length; i++){
+        console.log(user.events[i]);
+        var event_id = user.events[i];
+      }
       res.json(user);
     });
   })
@@ -97,10 +103,20 @@ router.route('/users/:user_id')
 .delete(function(req, res) {
   var user_id = req.params.user_id;
   console.log("In delete method");
-  User.findOneAndRemove(user_id, req.body, function(err, user) {
+  // User.find({})
+  //   .populate('events').remove()
+  //   .exec(function(err, users) {
+  //     if (err) res.status(400).send(err);
+  //     // res.json(users);
+  //   });
+
+  // User.findOneAndRemove(user_id, req.body, function(err, user) {
+  User.findOne({_id: user_id}, function(err, user) {
+    user.remove();
     if (err) return next(err);
     res.json(user);
   });
+
 });
 
 
@@ -151,9 +167,7 @@ router.route('/events')
     console.log(req.body.user);
     new_event.save(function(err) {
       if (err) return next(err);
-      var user_id = {
-        _id: req.body.user
-      };
+      var user_id = {_id: req.body.user };
       var update_event = {
         events: new_event._id
       };

@@ -1,5 +1,6 @@
 
 var mongoose = require('mongoose');
+var Event = require('./event');
 var userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -22,5 +23,9 @@ ref: 'Event'
   timestamps: {}
 });
 
+userSchema.pre('remove', function(next){
+  Event.remove({user:this._id}).exec();
+  next();
+})
 var User = mongoose.model('User', userSchema);
 module.exports = User;
