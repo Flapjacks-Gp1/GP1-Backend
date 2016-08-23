@@ -64,7 +64,7 @@ router.route('/users')
         if (err) res.status(400).send(err);
         res.json(users);
       });
-  })
+  });
 
 //edit and delete users
 router.route('/users/:user_id')
