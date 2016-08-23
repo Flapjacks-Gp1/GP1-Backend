@@ -6,6 +6,8 @@ var expressJWT = require('express-jwt');
 var express = require('express');
 var app = express();
 var jwt_secret = 'whateversuperduperwho';
+var methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 
 var port = process.env.PORT || 9000;
 app.set('port', port);
@@ -14,7 +16,7 @@ app.set('port', port);
 //body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }));
 
 app.use(function(req, res, next) {

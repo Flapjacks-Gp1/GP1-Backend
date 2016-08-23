@@ -16,9 +16,22 @@ router.post('/signup', function(req, res) {
   //save the new user object
   new_user.save(function(err, user) {
     if (err) return res.status(400).send(err);
-    return res.status(200).send({
-      message: 'user created'
-    });
+
+    var payload = {
+      id: new_user.id,
+      email: new_user.email
+    };
+    var expiryObj = {
+      expiresIn: '3h'
+    };
+    console.log( payload, expiryObj, jwt_secret);
+    var jwt_token =
+      jwt.sign(payload, jwt_secret, expiryObj);
+
+    var userID = new_user.id;
+
+    return res.status(200).send({token: jwt_token, id: userID, name: new_user.name});
+
   });
 });
 
@@ -46,7 +59,12 @@ router.post('/login', function(req, res) {
         //edited to expiry object
         var userID = found_user.id;
 
-        return res.status(200).send({token: jwt_token, id: userID});
+        return res.status(200).send({
+          token: jwt_token,
+          id: userID,
+          name: found_user.name
+        });
+        //  return res.status(200).send(jwt_token);
       } else {
         // this is login failed flow
         return res.status(400).send({
@@ -59,43 +77,62 @@ router.post('/login', function(req, res) {
 router.route('/users')
   .get(function(req, res) {
     User.find({})
-      .populate('events')
+      // .populate('events')
       .exec(function(err, users) {
         if (err) res.status(400).send(err);
         res.json(users);
       });
   });
 
-//edit and delete users
+// //edit and delete users
 router.route('/users/:user_id')
   .get(function(req, res, next) {
     var user_id = req.params.user_id;
+
     User.findOne({
       _id: user_id
     }, function(err, user) {
       if (err) return next(err);
+      console.log(user.events.length);
+
+      for (i=0; i < user.events.length; i++){
+        console.log(user.events[i]);
+        var event_id = user.events[i];
+      }
       res.json(user);
-    });
+    })  .populate('events');
   })
+//
+.post(function(req, res, next) {
+  console.log(req.body);
+  var user_id = req.params.user_id;
 
-  .put(function(req, res, next) {
-    console.log(req.body);
-    var event_id = req.params.event_id;
-
-    Event.findByIdAndUpdate(event_id, req.body, {new: true},function(err, event) {
-      if (err) res.status(400).send(err);
-      res.json(event)
-      });
-    })
-
+  console.log("editing user");
+  User.findByIdAndUpdate(user_id, req.body, {
+    new: true
+  }, function(err, user) {
+    if (err) res.status(400).send(err);
+    res.json(user);
+  });
+})
+//
 .delete(function(req, res) {
   var user_id = req.params.user_id;
-  console.log("user_id" + user_id);
-  console.log("user" + user);
-  User.findOneAndRemove(user_id, req.body, function(err, user) {
+  console.log("In delete method");
+  // User.find({})
+  //   .populate('events').remove()
+  //   .exec(function(err, users) {
+  //     if (err) res.status(400).send(err);
+  //     // res.json(users);
+  //   });
+
+  // User.findOneAndRemove(user_id, req.body, function(err, user) {
+  User.findOne({_id: user_id}, function(err, user) {
+    user.remove();
     if (err) return next(err);
     res.json(user);
   });
+
 });
 
 
@@ -111,22 +148,23 @@ router.route('/events/:event_id')
   })
 
 .put(function(req, res, next) {
-    console.log(req.body);
-    var event_id = req.params.event_id;
+  console.log(req.body);
+  var event_id = req.params.event_id;
 
-    Event.findByIdAndUpdate(event_id, req.body, {
-      new: true
-    }, function(err, event) {
-      if (err) res.status(400).send(err);
-      res.json(event)
-    });
-  })
-  .delete(function(req, res) {
-    var event_id = req.params.event_id;
-    Event.findOneAndRemove(event_id, req.body, function(err, event) {
-      console.log("event_id" + event_id);
-      if (err) return next(err);
-      res.json(event);
+  Event.findByIdAndUpdate(event_id, req.body, {
+    new: true
+  }, function(err, event) {
+    if (err) res.status(400).send(err);
+    res.json(event)
+  });
+})
+
+.delete(function(req, res) {
+  var event_id = req.params.event_id;
+  Event.findOneAndRemove(event_id, req.body, function(err, event) {
+    console.log("event_id" + event_id);
+    if (err) return next(err);
+    res.json(event);
     });
   });
 
@@ -145,12 +183,20 @@ router.route('/events')
     console.log(req.body.user);
     new_event.save(function(err) {
       if (err) return next(err);
-      var user_id = { _id: req.body.user };
-      var update_event = { events: new_event._id };
+      var user_id = {_id: req.body.user };
+      var update_event = {
+        events: new_event._id
+      };
       console.log(user_id);
       console.log(update_event);
       //save event id to user
-      User.findByIdAndUpdate(user_id, { $push: update_event }, {safe: true, upsert: true, new : true}, function(err, update_user) {
+      User.findByIdAndUpdate(user_id, {
+        $push: update_event
+      }, {
+        safe: true,
+        upsert: true,
+        new: true
+      }, function(err, update_user) {
         // if (err) res.status(400).send(err);
         console.log(err);
         console.log(update_user);
@@ -159,6 +205,7 @@ router.route('/events')
       res.json(new_event);
     });
   });
+
 
 
 module.exports = router;
