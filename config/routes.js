@@ -134,16 +134,44 @@ router.route('/users/:user_id')
   });
 
 });
-
-
+//////////////#################
+//////////////#################
+//////////////#################
+//////////////#################
 router.route('/events/:event_id')
   .get(function(req, res, next) {
+    console.log('lookie');
+    console.log(req.user);
+    console.log(req.user.id);
+    var api_request_user = req.user.id;
+    // if event user is the same as token user -> pass json with created_user: true
+    // else created_user false
+
+    // console.log(req.user.email);
     var event_id = req.params.event_id;
     Event.findOne({
       _id: event_id
     }, function(err, event) {
       if (err) return next(err);
-      res.json(event);
+
+      if (api_request_user === event.user) {
+        res.json(  {
+            event : event,
+            created_by_user: true
+          })
+      } else {
+        // res.json(event);
+        res.json(  {
+            event : event,
+            created_by_user: false
+          });
+
+
+
+      }
+
+
+
     });
   })
 

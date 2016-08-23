@@ -26,7 +26,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-
 app.use(
   expressJWT({
     secret: jwt_secret
@@ -38,11 +37,11 @@ app.use(
       {
         url: '/api/events',
         methods: ['GET']
-      },
-      {
-        url: new RegExp('/api/events.*/', 'i'),
-        methods: ['GET']
       }
+      // {
+      //   url: new RegExp('/api/events.*/', 'i'),
+      //   methods: ['GET']
+      // }
       // '/login',
       // { url: new RegExp('/users.*/', 'i'), methods: ['PUT', 'GET']  }
     ]
