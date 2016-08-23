@@ -16,17 +16,20 @@ router.post('/signup', function(req, res) {
   //save the new user object
   new_user.save(function(err, user) {
     if (err) return res.status(400).send(err);
-       var payload = {
- 	     id: new_user.id,
-     email: new_user.email
-   };
-   var expiryObj = {
-     expiresIn: '3h'
-   };
-   console.log( payload, expiryObj, jwt_secret);
-   var jwt_token =
-    jwt.sign(payload, jwt_secret, expiryObj);
+
+    var payload = {
+      id: new_user.id,
+      email: new_user.email
+    };
+    var expiryObj = {
+      expiresIn: '3h'
+    };
+    console.log( payload, expiryObj, jwt_secret);
+    var jwt_token =
+      jwt.sign(payload, jwt_secret, expiryObj);
+
     var userID = new_user.id;
+
     return res.status(200).send({token: jwt_token, id: userID, name: new_user.name});
 
   });
