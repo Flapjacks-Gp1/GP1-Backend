@@ -6,9 +6,25 @@ var expressJWT = require('express-jwt');
 var express = require('express');
 var app = express();
 var jwt_secret = 'whateversuperduperwho';
+// var methodOverride = require('method-override');
 
 var port = process.env.PORT || 9000;
 app.set('port', port);
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  next();
+});
+
+// app.use(methodOverride(function(request, response) {
+//   if(request.body && typeof request.body === 'object' && '_method' in request.body) {
+//     var method = request.body._method;
+//     delete request.body._method;
+//     return method;
+//   }
+// }));
 
 //set all the middlewares
 //body-parser
@@ -17,11 +33,6 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  next();
-});
 
 
 app.use(
