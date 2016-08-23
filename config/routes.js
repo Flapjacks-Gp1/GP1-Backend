@@ -16,9 +16,19 @@ router.post('/signup', function(req, res) {
   //save the new user object
   new_user.save(function(err, user) {
     if (err) return res.status(400).send(err);
-    return res.status(200).send({
-      message: 'user created'
-    });
+       var payload = {
+ 	     id: new_user.id,
+     email: new_user.email
+   };
+   var expiryObj = {
+     expiresIn: '3h'
+   };
+   console.log( payload, expiryObj, jwt_secret);
+   var jwt_token =
+    jwt.sign(payload, jwt_secret, expiryObj);
+    var userID = new_user.id;
+    return res.status(200).send({token: jwt_token, id: userID, name: new_user.name});
+
   });
 });
 
@@ -48,7 +58,8 @@ router.post('/login', function(req, res) {
 
         return res.status(200).send({
           token: jwt_token,
-          id: userID
+          id: userID,
+          name: found_user.name
         });
         //  return res.status(200).send(jwt_token);
       } else {
@@ -63,7 +74,7 @@ router.post('/login', function(req, res) {
 router.route('/users')
   .get(function(req, res) {
     User.find({})
-      .populate('events')
+      // .populate('events')
       .exec(function(err, users) {
         if (err) res.status(400).send(err);
         res.json(users);
@@ -80,18 +91,20 @@ router.route('/users/:user_id')
     }, function(err, user) {
       if (err) return next(err);
       console.log(user.events.length);
+
       for (i=0; i < user.events.length; i++){
         console.log(user.events[i]);
         var event_id = user.events[i];
       }
       res.json(user);
-    });
+    })  .populate('events');
   })
 //
-.put(function(req, res, next) {
+.post(function(req, res, next) {
   console.log(req.body);
   var user_id = req.params.user_id;
 
+  console.log("editing user");
   User.findByIdAndUpdate(user_id, req.body, {
     new: true
   }, function(err, user) {
