@@ -143,6 +143,7 @@ router.route('/events/:event_id')
     var api_request_user = req.user.id;
     // if event user is the same as token user -> pass json with created_user: true
     // else created_user false
+    //
 
     // console.log(req.user.email);
     var event_id = req.params.event_id;
