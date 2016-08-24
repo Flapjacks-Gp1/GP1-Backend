@@ -15,6 +15,7 @@ var userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  avatar: String,
 events:[{
 type: mongoose.Schema.Types.ObjectId,
 ref: 'Event'

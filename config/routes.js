@@ -79,7 +79,6 @@ router.post('/login', function(req, res) {
 router.post('/logout', function(req, res) {
   blacklist.revoke(req.user)
   res.sendStatus(200);
-
 })
 //get all users
 router.route('/users')
