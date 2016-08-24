@@ -5,6 +5,11 @@ var router = express.Router(),
 var expressJWT = require('express-jwt');
 var User = require('../models/user');
 var Event = require('../models/event');
+var blacklist = require('express-jwt-blacklist');
+
+blacklist.configure({
+  tokenId: 'id'
+});
 
 //updated routes for events
 router.post('/signup', function(req, res) {
@@ -24,7 +29,7 @@ router.post('/signup', function(req, res) {
     var expiryObj = {
       expiresIn: '3h'
     };
-    console.log( payload, expiryObj, jwt_secret);
+    // console.log( payload, expiryObj, jwt_secret);
     var jwt_token =
       jwt.sign(payload, jwt_secret, expiryObj);
 
@@ -37,6 +42,8 @@ router.post('/signup', function(req, res) {
 
 
 router.post('/login', function(req, res) {
+
+  console.log(req.body);
   var loggedin_user = req.body;
 
   User.findOne(
@@ -64,7 +71,7 @@ router.post('/login', function(req, res) {
           id: userID,
           name: found_user.name
         });
-        //  return res.status(200).send(jwt_token);
+         return res.status(200).send(jwt_token);
       } else {
         // this is login failed flow
         return res.status(400).send({
@@ -76,10 +83,10 @@ router.post('/login', function(req, res) {
 
 //logout
 
-router.post('/logout', function(req, res) {
-  blacklist.revoke(req.user)
-  res.sendStatus(200);
-})
+router.get('/logout', function(req, res) {
+  blacklist.revoke(req.user);
+  res.send('logout success');
+});
 //get all users
 router.route('/users')
   .get(function(req, res) {
@@ -89,7 +96,7 @@ router.route('/users')
         if (err) res.status(400).send(err);
         res.json(users);
       });
-  })
+  });
 
 // //edit and delete users
 router.route('/users/:user_id')
