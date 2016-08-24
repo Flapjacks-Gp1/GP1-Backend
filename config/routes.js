@@ -134,10 +134,7 @@ router.route('/users/:user_id')
   });
 
 });
-//////////////#################
-//////////////#################
-//////////////#################
-//////////////#################
+
 router.route('/events/:event_id')
   .get(function(req, res, next) {
     console.log('lookie');
@@ -166,11 +163,7 @@ router.route('/events/:event_id')
             created_by_user: false
           });
 
-
-
       }
-
-
 
     });
   })
