@@ -1,11 +1,11 @@
 {
-  "name": "gp1-backend",
+  "name": "GP1-Backend",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app",
-    "test": "jasmine-node spec"
+    "test": "jasmine-node spec --forceexit"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +15,10 @@
     "express-jwt": "^3.4.0",
     "jsonwebtoken": "^7.1.9",
     "method-override": "^2.3.6",
-    "mongoose": "^4.5.9"
+    "mongoose": "^4.5.9",
+    "supertest": "^2.0.0"
+  },
+  "devDependencies": {
+    "jasmine-node": "^1.14.5"
   }
 }

@@ -161,7 +161,7 @@ router.route('/events/:event_id')
 
 .delete(function(req, res) {
   var event_id = req.params.event_id;
-  Event.findOneAndRemove(event_id, req.body, function(err, event) {
+  Event.findOneAndRemove({_id: event_id}, function(err, event) {
     console.log("event_id" + event_id);
     if (err) return next(err);
     res.json(event);

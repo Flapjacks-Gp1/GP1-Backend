@@ -3,4 +3,8 @@ node_js:
 - node
 deploy:
   provider: heroku
-  
+  api_key:
+    secure: sv5PfMXz+glmuQGLO28XmCEZvRyRYrs0w0mMev6w5TGi2IF6UZRnoBbPysjls982zgEI4iBdM1Pol/HgOKFrXPRnJDmWwsAyJw9AbVOVZg3bYGOL4WU/tvPXH3ruoz6d3DWy1r2CTQtPEK/iTBLBvVOQdMWTeujmCqExumRky8NlfqD8lA4jyngDx1JyNDH2iAIXR92UPexpQj3dtC5SCpTu8LWF4u8Mjc5u+Bp37kqt7fZbzRV9b2WGwc5EAtgErB4/2a1AE18bDXgZdA1NsI+ZbsqwJ89nhWjas8rlqraBrZO2dskE2sSamQo9tMZBJu+DiQA/HJfywxW8GANZWGqSbe9O7XYqHboecLPo//oLFz6NIn5twVrvvUXtwMUXeQQtcZ7JInhk81K0DJO6uzm+27uzS9Wv30FJsBvpp5Va01BbKyYKTBuxQJC4RBZBrhIVgaUsg9qmTp4gNZOJKp3LxR/fWd4f5qDR/Lq/3WyZU+DRsZFEzfquCyMLTqxXgPzheFoLYTNyDYvmD7hzCN+0Me7YPpZESk/exWUR/+NPRqf8Andu69mlEuRn8QPVd4tESjpKkwCg6d1taF/YKSCH9tGbvjGKmcxfbMcnhsk5Oytg61Oj7J50VXDb1CmUp1KZjQoC+KJi1lTseqIs2wOBJ/zqd3aDMFmMXYkGPBc=
+  app: jio-app
+  on:
+    repo: Flapjacks-Gp1/GP1-Backend
