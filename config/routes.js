@@ -73,6 +73,14 @@ router.post('/login', function(req, res) {
       }
     });
 });
+
+//logout
+
+router.post('/logout', function(req, res) {
+  blacklist.revoke(req.user)
+  res.sendStatus(200);
+
+})
 //get all users
 router.route('/users')
   .get(function(req, res) {

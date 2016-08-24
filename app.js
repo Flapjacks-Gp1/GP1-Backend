@@ -7,6 +7,7 @@ var express = require('express');
 var app = express();
 var jwt_secret = 'whateversuperduperwho';
 var methodOverride = require('method-override');
+var blacklist = require('express-jwt-blacklist');
 app.use(methodOverride('_method'));
 
 var port = process.env.PORT || 9000;
@@ -29,7 +30,8 @@ app.use(bodyParser.urlencoded({
 
 app.use(
   expressJWT({
-    secret: jwt_secret
+    secret: jwt_secret,
+    isRevoked:blacklist.isRevoked
   })
   .unless({
     path: [
