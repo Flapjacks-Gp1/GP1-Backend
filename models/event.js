@@ -9,7 +9,8 @@ var eventSchema = new mongoose.Schema({
   location: {
     type: String,
     required: true
-},
+  },
+  coordinates: [],
   description: {
     type: String,
     required: true
